@@ -3,58 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ismail <ismail@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ishouche <ishouche@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 23:25:37 by ismail            #+#    #+#             */
-/*   Updated: 2024/04/23 00:01:07 by ismail           ###   ########.fr       */
+/*   Updated: 2024/04/25 02:51:40 by ishouche         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-
-void	cleanup_and_exit(int status, t_data *d)
-{
-	if (d->mlx)
-		free(d->mlx);
-	if (d->win)
-		free(d->win);
-	exit(status);
-}
-
-int	on_win_destroy(t_data *d)
-{
-	cleanup_and_exit(0, d);
-	return (0);
-}
-
-int	on_keydown(int keycode, t_data *d)
-{
-	if (keycode == 53)
-		cleanup_and_exit(0, d);
-	return (0);
-}
-
-void	init_data(t_data *d)
-{
-	d->mlx = NULL;
-	d->win = NULL;
-}
 
 int	main(int ac, char **av)
 {
 	t_data	d;
 
 	init_data(&d);
-	(void)av;
 	if (ac != 2)
 		return (write(2, "Usage: ./fdf <map>\n", 19), 1);
 	d.mlx = mlx_init();
-	d.win = mlx_new_window(d.mlx, 1000, 500, "fdf");
+	d.win = mlx_new_window(d.mlx, WIN_W, WIN_H, "fdf");
+	d.d_img.img = mlx_new_image(d.mlx, WIN_W, WIN_H);
+	d.d_img.addr = mlx_get_data_addr(d.d_img.img, &d.d_img.bits_per_pixel,
+			&d.d_img.line_length, &d.d_img.endian);
 	mlx_hook(d.win, ON_KEYDOWN, 1 << 0, on_keydown, &d);
 	mlx_hook(d.win, ON_DESTROY, 0, on_win_destroy, &d);
-
-	// lire argument ../test_maps/42.fdf
-
+	d.points = parse(av[1]);
+	if (!d.points)
+	{
+		write(2, "Invalid map\n", 12);
+		cleanup_and_exit(1, &d);
+	}
+	render(d.points, &d);
 	mlx_loop(d.mlx);
 	return (0);
 }
