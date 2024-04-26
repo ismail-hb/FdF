@@ -6,7 +6,7 @@
 /*   By: ishouche <ishouche@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 03:44:55 by ismail            #+#    #+#             */
-/*   Updated: 2024/04/25 02:59:15 by ishouche         ###   ########.fr       */
+/*   Updated: 2024/04/26 02:27:24 by ishouche         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ void	draw_line_3d(t_v3 p1, t_v3 p2, t_img *d_img, t_v2 map_size)
 	double	mult;
 
 	mult = 500 / map_size.x;
-	p1.x -= map_size.x / 2;
-	p2.x -= map_size.x / 2;
-	p1.y -= map_size.y / 2;
-	p2.y -= map_size.y / 2;
+	p1.x -= map_size.x >> 1;
+	p2.x -= map_size.x >> 1;
+	p1.y -= map_size.y >> 1;
+	p2.y -= map_size.y >> 1;
 	p1.x *= mult;
 	p1.y *= mult;
 	p1.z *= mult;
@@ -57,12 +57,12 @@ void	draw_line_3d(t_v3 p1, t_v3 p2, t_img *d_img, t_v2 map_size)
 	p2.z *= mult;
 	draw_line(
 		(t_v2){
-		WIN_W / 2 + p1.x - p1.y * 1.73,
-		WIN_H / 2 + p1.y + p1.x * 0.82 - p1.z
+		(WIN_W >> 1) + p1.x - p1.y * 1.73,
+		(WIN_H >> 1) + p1.y + p1.x * 0.82 - p1.z
 	},
 		(t_v2){
-		WIN_W / 2 + p2.x - p2.y * 1.73,
-		WIN_H / 2 + p2.y + p2.x * 0.82 - p2.z
+		(WIN_W >> 1) + p2.x - p2.y * 1.73,
+		(WIN_H >> 1) + p2.y + p2.x * 0.82 - p2.z
 	},
 		d_img);
 }
@@ -90,6 +90,6 @@ void	draw_pixel(int x, int y, t_img *d_img)
 	if (x < 0 || y < 0 || x > WIN_W || y > WIN_H)
 		return ;
 	dst = d_img->addr + (y * d_img->line_length)
-		+ (x * d_img->bits_per_pixel / 8);
+		+ (x * d_img->bits_per_pixel >> 3);
 	*(unsigned int *)dst = 0xFFFFFF;
 }

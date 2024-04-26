@@ -6,7 +6,7 @@
 /*   By: ishouche <ishouche@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 23:25:42 by ismail            #+#    #+#             */
-/*   Updated: 2024/04/25 02:54:47 by ishouche         ###   ########.fr       */
+/*   Updated: 2024/04/26 02:47:25 by ishouche         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,22 @@
 # include <limits.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include <stdio.h> // TODO TEMP
 
 # define ON_KEYDOWN	2
 # define ON_DESTROY	17
 
 # define WIN_W 1920
 # define WIN_H 1080
+
+typedef struct s_prs
+{
+	int	fd;
+	int	line_num;
+	int	line_len;
+	int	first_line_len;
+	int	x;
+	int	y;
+}	t_prs;
 
 typedef struct s_v2
 {
@@ -74,6 +83,9 @@ int		on_keydown(int keycode, t_data *d);
 int		lerp(int from, int to, double alpha);
 double	get_dist(t_v2 p1, t_v2 p2);
 ssize_t	**parse(char *file);
+ssize_t	**make_parse_small(ssize_t **points, t_prs *parse);
+ssize_t	**make_it_smaller(char *str, char **str2,
+			t_prs *parse, ssize_t **points);
 t_v2	get_map_size(ssize_t **points);
 t_v2	lerp_v2(t_v2 p1, t_v2 p2, double alpha);
 
